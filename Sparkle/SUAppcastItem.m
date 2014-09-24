@@ -55,12 +55,12 @@
 
 - (BOOL)isDeltaUpdate
 {
-    return self.propertiesDictionary[@"enclosure"][@"sparkle:deltaFrom"] != nil;
+    return self.propertiesDictionary[SURSSElementEnclosure][SUAppcastAttributeDeltaFrom] != nil;
 }
 
 - (BOOL)isCriticalUpdate
 {
-    return [self.propertiesDictionary[@"sparkle:tags"] containsObject:@"sparkle:criticalUpdate"];
+    return [self.propertiesDictionary[SUAppcastElementTags] containsObject:SUAppcastElementCriticalUpdate];
 }
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict
@@ -71,9 +71,8 @@
 - (instancetype)initWithDictionary:(NSDictionary *)dict failureReason:(NSString *__autoreleasing *)error
 {
     self = [super init];
-	if (self)
-	{
-        id enclosure = dict[@"enclosure"];
+    if (self) {
+        id enclosure = dict[SURSSElementEnclosure];
 
         // Try to find a version string.
         // Finding the new version number from the RSS feed is a little bit hacky. There are two ways:
@@ -83,51 +82,54 @@
         //    underscore and the last period as the version number. So name your packages like this: APPNAME_VERSION.extension.
         //    The big caveat with this is that you can't have underscores in your version strings, as that'll confuse Sparkle.
         //    Feel free to change the separator string to a hyphen or something more suited to your needs if you like.
-        NSString *newVersion = enclosure[@"sparkle:version"];
-        if (newVersion == nil)
-            newVersion = dict[@"sparkle:version"]; // Get version from the item, in case it's a download-less item (i.e. paid upgrade).
+        NSString *newVersion = enclosure[SUAppcastAttributeVersion];
+        if (newVersion == nil) {
+            newVersion = dict[SUAppcastAttributeVersion]; // Get version from the item, in case it's a download-less item (i.e. paid upgrade).
+        }
         if (newVersion == nil) // no sparkle:version attribute anywhere?
         {
+            SULog(@"warning: <%@> for URL '%@' is missing %@ attribute. Version comparison may be unreliable. Please always specify %@", SURSSElementEnclosure, enclosure[SURSSAttributeURL], SUAppcastAttributeVersion, SUAppcastAttributeVersion);
+
             // Separate the url by underscores and take the last component, as that'll be closest to the end,
             // then we remove the extension. Hopefully, this will be the version.
-            NSArray *fileComponents = [enclosure[@"url"] componentsSeparatedByString:@"_"];
-            if ([fileComponents count] > 1)
+            NSArray *fileComponents = [enclosure[SURSSAttributeURL] componentsSeparatedByString:@"_"];
+            if ([fileComponents count] > 1) {
                 newVersion = [[fileComponents lastObject] stringByDeletingPathExtension];
+            }
         }
 
-		if(!newVersion )
-		{
-            if (error)
-                *error = @"Feed item lacks sparkle:version attribute, and version couldn't be deduced from file name (would have used last component of a file name like AppName_1.3.4.zip)";
+        if (!newVersion) {
+            if (error) {
+                *error = [NSString stringWithFormat:@"Feed item lacks %@ attribute, and version couldn't be deduced from file name (would have used last component of a file name like AppName_1.3.4.zip)", SUAppcastAttributeVersion];
+            }
             return nil;
         }
 
         propertiesDictionary = [[NSMutableDictionary alloc] initWithDictionary:dict];
-        self.title = dict[@"title"];
-        self.date = dict[@"pubDate"];
-        self.itemDescription = dict[@"description"];
+        self.title = dict[SURSSElementTitle];
+        self.date = dict[SURSSElementPubDate];
+        self.itemDescription = dict[SURSSElementDescription];
 
-        NSString *theInfoURL = dict[@"link"];
-		if( theInfoURL )
-		{
-            if (![theInfoURL isKindOfClass:[NSString class]])
-                SULog(@"SUAppcastItem -initWithDictionary: Info URL is not of valid type.");
-            else
+        NSString *theInfoURL = dict[SURSSElementLink];
+        if (theInfoURL) {
+            if (![theInfoURL isKindOfClass:[NSString class]]) {
+                SULog(@"%@ -%@ Info URL is not of valid type.", NSStringFromClass([self class]), NSStringFromSelector(_cmd));
+            } else {
                 self.infoURL = [NSURL URLWithString:theInfoURL];
+            }
         }
 
         // Need an info URL or an enclosure URL. Former to show "More Info"
         //	page, latter to download & install:
-		if( !enclosure && !theInfoURL )
-		{
-            if (error)
+        if (!enclosure && !theInfoURL) {
+            if (error) {
                 *error = @"No enclosure in feed item";
+            }
             return nil;
         }
 
-        NSString *enclosureURLString = enclosure[@"url"];
-		if( !enclosureURLString && !theInfoURL )
-		{
+        NSString *enclosureURLString = enclosure[SURSSAttributeURL];
+        if (!enclosureURLString && !theInfoURL) {
             if (error) {
                 *error = @"Feed item's enclosure lacks URL";
             }
@@ -139,30 +141,32 @@
             self.fileURL = [NSURL URLWithString:fileURLString];
         }
         if (enclosure) {
-            self.DSASignature = enclosure[@"sparkle:dsaSignature"];
+            self.DSASignature = enclosure[SUAppcastAttributeDSASignature];
         }
 
         self.versionString = newVersion;
-        self.minimumSystemVersion = dict[@"sparkle:minimumSystemVersion"];
-        self.maximumSystemVersion = dict[@"sparkle:maximumSystemVersion"];
+        self.minimumSystemVersion = dict[SUAppcastElementMinimumSystemVersion];
+        self.maximumSystemVersion = dict[SUAppcastElementMaximumSystemVersion];
 
-        NSString *shortVersionString = enclosure[@"sparkle:shortVersionString"];
+        NSString *shortVersionString = enclosure[SUAppcastAttributeShortVersionString];
         if (nil == shortVersionString) {
-            shortVersionString = dict[@"sparkle:shortVersionString"]; // fall back on the <item>
+            shortVersionString = dict[SUAppcastAttributeShortVersionString]; // fall back on the <item>
         }
 
-        if (shortVersionString)
+        if (shortVersionString) {
             self.displayVersionString = shortVersionString;
-        else
-            self.displayVersionString = [self versionString];
+        } else {
+            self.displayVersionString = self.versionString;
+        }
 
-		// Find the appropriate release notes URL.
-		if (dict[@"sparkle:releaseNotesLink"])
-			self.releaseNotesURL = [NSURL URLWithString:dict[@"sparkle:releaseNotesLink"]];
-		else if ([self.itemDescription hasPrefix:@"http://"] || [self.itemDescription hasPrefix:@"https://"]) // if the description starts with http:// or https:// use that.
-			self.releaseNotesURL = [NSURL URLWithString:self.itemDescription];
-		else
-			self.releaseNotesURL = nil;
+        // Find the appropriate release notes URL.
+        if (dict[SUAppcastElementReleaseNotesLink]) {
+            self.releaseNotesURL = [NSURL URLWithString:dict[SUAppcastElementReleaseNotesLink]];
+        } else if ([self.itemDescription hasPrefix:@"http://"] || [self.itemDescription hasPrefix:@"https://"]) { // if the description starts with http:// or https:// use that.
+            self.releaseNotesURL = [NSURL URLWithString:self.itemDescription];
+        } else {
+            self.releaseNotesURL = nil;
+        }
         
         // Optional sparkle:size attribute
         // to be able to verify if the download is complete and return a different error case
@@ -173,17 +177,16 @@
         // hides the option to cancel the update
         mandatoryUpdate = [(NSNumber *)[dict objectForKey:@"sparkle:mandatory"] boolValue];
 
-        if (dict[@"deltas"])
-		{
+        NSArray *deltaDictionaries = dict[SUAppcastElementDeltas];
+        if (deltaDictionaries) {
             NSMutableDictionary *deltas = [NSMutableDictionary dictionary];
-            NSArray *deltaDictionaries = dict[@"deltas"];
             for (NSDictionary *deltaDictionary in deltaDictionaries) {
                 NSMutableDictionary *fakeAppCastDict = [dict mutableCopy];
-                [fakeAppCastDict removeObjectForKey:@"deltas"];
-                fakeAppCastDict[@"enclosure"] = deltaDictionary;
+                [fakeAppCastDict removeObjectForKey:SUAppcastElementDeltas];
+                fakeAppCastDict[SURSSElementEnclosure] = deltaDictionary;
                 SUAppcastItem *deltaItem = [[[self class] alloc] initWithDictionary:fakeAppCastDict];
 
-                deltas[deltaDictionary[@"sparkle:deltaFrom"]] = deltaItem;
+                deltas[deltaDictionary[SUAppcastAttributeDeltaFrom]] = deltaItem;
             }
             self.deltaUpdates = deltas;
         }
