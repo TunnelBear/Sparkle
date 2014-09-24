@@ -42,7 +42,7 @@
 - (void) saveResumableData:(NSNotification *)aNotification;
 - (void) tryDownloadRetry;
 
-@property (weak) SUAppcastItem *updateItem;
+@property (strong) SUAppcastItem *updateItem;
 @property (strong) NSURLDownload *download;
 @property (copy) NSString *downloadPath;
 
@@ -157,7 +157,7 @@
 
 - (BOOL)itemContainsValidUpdate:(SUAppcastItem *)ui
 {
-    return [self hostSupportsItem:ui] && [self isItemNewer:ui] && ![self itemContainsSkippedVersion:ui];
+    return ui && [self hostSupportsItem:ui] && [self isItemNewer:ui] && ![self itemContainsSkippedVersion:ui];
 }
 
 - (void)appcastDidFinishLoading:(SUAppcast *)ac
@@ -193,13 +193,13 @@
         }
     }
 
-    self.updateItem = item;
-	if (self.updateItem == nil) { [self didNotFindUpdate]; return; }
-
-    if ([self itemContainsValidUpdate:self.updateItem])
+    if ([self itemContainsValidUpdate:item]) {
+        self.updateItem = item;
         [self didFindValidUpdate];
-    else
+    } else {
+        self.updateItem = nil;
         [self didNotFindUpdate];
+    }
 }
 
 - (void)appcast:(SUAppcast *)__unused ac failedToLoadWithError:(NSError *)error
@@ -209,10 +209,15 @@
 
 - (void)didFindValidUpdate
 {
-    if ([[self.updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)])
+    assert(self.updateItem);
+
+    if ([[self.updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)]) {
         [[self.updater delegate] updater:self.updater didFindValidUpdate:self.updateItem];
-    NSDictionary *userInfo = (self.updateItem != nil) ? @{ SUUpdaterAppcastItemNotificationKey: self.updateItem } : nil;
-    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFindValidUpdateNotification object:self.updater userInfo:userInfo];
+    }
+
+    [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFindValidUpdateNotification
+                                                        object:self.updater
+                                                      userInfo:@{ SUUpdaterAppcastItemNotificationKey: self.updateItem }];
     [self downloadUpdate];
 }
 
@@ -221,11 +226,14 @@
     if ([[self.updater delegate] respondsToSelector:@selector(updaterDidNotFindUpdate:)]) {
         [[self.updater delegate] updaterDidNotFindUpdate:self.updater];
     }
+
     [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidNotFindUpdateNotification object:self.updater];
 
-    [self abortUpdateWithError:[NSError errorWithDomain:SUSparkleErrorDomain code:SUNoUpdateError userInfo:@{
-                                   NSLocalizedDescriptionKey: [NSString stringWithFormat:SULocalizedString(@"You already have the newest version of %@.", "'Error' message when the user checks for updates but is already current or the feed doesn't contain any updates. (not necessarily shown in UI)"), [self.host name]]
-                               }]];
+    [self abortUpdateWithError:[NSError errorWithDomain:SUSparkleErrorDomain
+                                                   code:SUNoUpdateError
+                                               userInfo:@{
+                                                   NSLocalizedDescriptionKey: [NSString stringWithFormat:SULocalizedString(@"You already have the newest version of %@.", "'Error' message when the user checks for updates but is already current or the feed doesn't contain any updates. (not necessarily shown in UI)"), self.host.name]
+                                               }]];
 }
 
 - (void)downloadUpdate
@@ -450,17 +458,26 @@
 - (BOOL)validateUpdateDownloadedToPath:(NSString *)downloadedPath extractedToPath:(NSString *)extractedPath DSASignature:(NSString *)DSASignature publicDSAKey:(NSString *)publicDSAKey
 {
     NSString *newBundlePath = [SUInstaller appPathInUpdateFolder:extractedPath forHost:self.host];
-    if (newBundlePath)
-    {
-        NSError *error = nil;
-        if ([SUCodeSigningVerifier codeSignatureIsValidAtPath:newBundlePath error:&error]) {
-            return YES;
+
+    if (newBundlePath) {
+        if ([SUCodeSigningVerifier hostApplicationIsCodeSigned]) {
+            NSError *error = nil;
+            if ([SUCodeSigningVerifier codeSignatureIsValidAtPath:newBundlePath error:&error]) {
+                return YES;
+            } else {
+                SULog(@"Code signature check on update failed: %@. Sparkle will use DSA signature instead.", error);
+            }
         } else {
-            SULog(@"Code signature check on update failed: %@", error);
+            SULog(@"The host app is not signed using Apple Code Signing, and therefore cannot verify updates this way. Sparkle will use DSA signature instead.");
         }
     }
 
-    return [SUDSAVerifier validatePath:downloadedPath withEncodedDSASignature:DSASignature withPublicDSAKey:publicDSAKey];
+    if (DSASignature) {
+        return [SUDSAVerifier validatePath:downloadedPath withEncodedDSASignature:DSASignature withPublicDSAKey:publicDSAKey];
+    } else {
+        SULog(@"The appcast item for the update has no DSA signature. The update will be rejected, because both DSA and Apple Code Signing verification failed.");
+        return NO;
+    }
 }
 
 
@@ -470,7 +487,7 @@
     SUUnarchiver *unarchiver = [SUUnarchiver unarchiverForPath:self.downloadPath updatingHost:self.host];
 	if (!unarchiver)
 	{
-        SULog(@"Sparkle Error: No valid unarchiver for %@!", self.downloadPath);
+        SULog(@"Error: No valid unarchiver for %@!", self.downloadPath);
         [self unarchiverDidFail:nil];
         return;
     }
@@ -489,6 +506,8 @@
 
 - (void)unarchiverDidFinish:(SUUnarchiver *)__unused ua
 {
+    assert(self.updateItem);
+
     [self installWithToolAndRelaunch:YES];
 }
 
@@ -512,7 +531,9 @@
 
 - (void)installWithToolAndRelaunch:(BOOL)relaunch displayingUserInterface:(BOOL)showUI
 {
-    if (![self validateUpdateDownloadedToPath:self.downloadPath extractedToPath:self.tempDir DSASignature:[self.updateItem DSASignature] publicDSAKey:[self.host publicDSAKey]])
+    assert(self.updateItem);
+
+    if (![self validateUpdateDownloadedToPath:self.downloadPath extractedToPath:self.tempDir DSASignature:self.updateItem.DSASignature publicDSAKey:self.host.publicDSAKey])
     {
         NSDictionary *userInfo = @{
             NSLocalizedDescriptionKey: SULocalizedString(@"An error occurred while extracting the archive. Please try again later.", nil),
@@ -655,6 +676,7 @@
     if (!self.downloadTimer)
     {
         [[NSNotificationCenter defaultCenter] removeObserver:self];
+        self.updateItem = nil;
         [super abortUpdate];
     }
 }
@@ -706,11 +728,11 @@
 
 - (void)abortUpdateWithError:(NSError *)error
 {
-	if ([error code] != SUNoUpdateError) { // Let's not bother logging this.
-		SULog(@"Sparkle Error: %@", [error localizedDescription]);
+    if ([error code] != SUNoUpdateError) { // Let's not bother logging this.
+        SULog(@"Error: %@ %@", [error localizedDescription], [error localizedFailureReason]);
 	}
 	if ([error localizedFailureReason]) {
-		SULog(@"Sparkle Error (continued): %@", [error localizedFailureReason]);
+		SULog(@"Error (continued): %@", [error localizedFailureReason]);
     }
 
     // allow resumable downloads

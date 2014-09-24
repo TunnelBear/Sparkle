@@ -39,10 +39,9 @@
 void SUClearLog(void)
 {
     FILE *logfile = fopen([[LOG_FILE_PATH stringByExpandingTildeInPath] fileSystemRepresentation], "w");
-    if (logfile)
+    if (logfile) {
         fclose(logfile);
-    else
-        NSLog(@"----- Sparkle Log -----");
+    }
 }
 
 
@@ -61,18 +60,14 @@ void SULog(NSString *format, ...)
     va_list ap;
     va_start(ap, format);
     NSString *theStr = [[NSString alloc] initWithFormat:format arguments:ap];
+    NSLog(@"Sparkle: %@", theStr);
+
     FILE *logfile = fopen([[LOG_FILE_PATH stringByExpandingTildeInPath] fileSystemRepresentation], "a");
-    if (!logfile)
-        NSLog(@"%@", theStr);
-	else
-	{
-        theStr = [NSString stringWithFormat:@"%@: %@", [NSDate date], theStr];
+    if (logfile) {
+        theStr = [NSString stringWithFormat:@"%@: %@\n", [NSDate date], theStr];
         NSData *theData = [theStr dataUsingEncoding:NSUTF8StringEncoding];
-        char newlineChar = '\n';
         fwrite([theData bytes], 1, [theData length], logfile);
-        fwrite(&newlineChar, 1, 1, logfile); // Append a newline.
         fclose(logfile);
-        logfile = NULL;
     }
     va_end(ap);
 }
