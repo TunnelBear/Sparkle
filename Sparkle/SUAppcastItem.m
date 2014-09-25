@@ -171,11 +171,11 @@
         // Optional sparkle:size attribute
         // to be able to verify if the download is complete and return a different error case
         // for the situation when somehow the update is truncated
-        fileSize = [(NSNumber *)[dict objectForKey:@"sparkle:size"] unsignedIntegerValue];
+        fileSize = [(NSNumber *)[dict objectForKey:SUAppcastAttributeSize] unsignedIntegerValue];
         
         // Optional sparkle:mandatory attribute
         // hides the option to cancel the update
-        mandatoryUpdate = [(NSNumber *)[dict objectForKey:@"sparkle:mandatory"] boolValue];
+        mandatoryUpdate = [(NSNumber *)[dict objectForKey:SUAppcastAttributeMandatory] boolValue];
 
         NSArray *deltaDictionaries = dict[SUAppcastElementDeltas];
         if (deltaDictionaries) {

@@ -69,7 +69,9 @@ extern NSString *const SURelaunchToolNameKey;
 
 extern NSString *const SUAppcastAttributeDeltaFrom;
 extern NSString *const SUAppcastAttributeDSASignature;
+extern NSString *const SUAppcastAttributeMandatory;
 extern NSString *const SUAppcastAttributeShortVersionString;
+extern NSString *const SUAppcastAttributeSize;
 extern NSString *const SUAppcastAttributeVersion;
 
 extern NSString *const SUAppcastElementCriticalUpdate;
