@@ -79,6 +79,7 @@ typedef struct {
         appSupportPath = appSupportPaths[0];
     }
     appSupportPath = [appSupportPath stringByAppendingPathComponent:[self name]];
+    appSupportPath = [appSupportPath stringByAppendingPathComponent:@".Sparkle"];
     return appSupportPath;
 }
 
