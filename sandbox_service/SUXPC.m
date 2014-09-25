@@ -16,7 +16,7 @@
 
 + (BOOL)copyPathWithAuthentication:(NSString *)src overPath:(NSString *)dst temporaryName:(NSString *)tmp error:(NSError *__autoreleasing *)__unused error
 {
-	xpc_connection_t connection = xpc_connection_create(SANDBOX_SERVICE_NAME_STR, NULL);
+	xpc_connection_t connection = xpc_connection_create(SPARKLE_SANDBOX_SERVICE_NAME, NULL);
     
 	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
         
@@ -44,7 +44,7 @@
 }
 
 + (void)launchTaskWithLaunchPath:(NSString *)path arguments:(NSArray *)arguments {
-	xpc_connection_t connection = xpc_connection_create(SANDBOX_SERVICE_NAME_STR, NULL);
+	xpc_connection_t connection = xpc_connection_create(SPARKLE_SANDBOX_SERVICE_NAME, NULL);
 	xpc_connection_set_event_handler(connection, ^(xpc_object_t event) {
 		xpc_dictionary_apply(event, ^bool(const char *key, xpc_object_t value) {
 			NSLog(@"XPC %s: %s", key, xpc_string_get_string_ptr(value));

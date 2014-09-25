@@ -533,7 +533,7 @@ NSLocalizedFailureReasonErrorKey:
     BOOL inSandbox = (nil != [environ objectForKey:@"APP_SANDBOX_CONTAINER_ID"]);
     BOOL running10_7 = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6;
     BOOL useXPC = running10_7 && inSandbox &&
-                  [[NSFileManager defaultManager] fileExistsAtPath: [[self.host bundlePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Contents/XPCServices/%@.xpc", @(SANDBOX_SERVICE_NAME_STR)]]];
+                  [[NSFileManager defaultManager] fileExistsAtPath: [[self.host bundlePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Contents/XPCServices/%@.xpc", @(SPARKLE_SANDBOX_SERVICE_NAME)]]];
     SULog(@"installWithToolAndRelaunch - using xpc=%d", useXPC);
 
 
