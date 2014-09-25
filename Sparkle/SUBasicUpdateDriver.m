@@ -624,7 +624,12 @@
 	else
         [NSTask launchedTaskWithLaunchPath: relaunchToolPath arguments: arguments];
 
+    [self terminateApp];
+}
 
+
+- (void)terminateApp
+{
     [NSApp terminate:self];
 }
 
