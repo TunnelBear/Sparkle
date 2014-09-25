@@ -11,8 +11,6 @@
 // SUFileSizeError - optionally sending the file size and returning an error if the downlaoded file size doesn't match it
 //  (the old behavior will get an uncompress error)
 // SUClearLogsAutomatically - optionally clean or not the update logs
-// SUUseJSONAppCast - optionally use a JSON appcast instead of a XML one
-
 
 #import "SUUpdater.h"
 
@@ -83,5 +81,3 @@ NSString *const SURSSElementPubDate = @"pubDate";
 NSString *const SURSSElementTitle = @"title";
 
 NSString *const SUClearLogsAutomatically = @"SUClearLogsAutomatically";
-NSString *const SUUseJSONAppCast = @"SUUseJSONAppCast";
-

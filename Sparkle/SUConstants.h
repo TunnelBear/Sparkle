@@ -9,7 +9,6 @@
 // Copyright 2014 Yahoo Inc. Licensed under the project's open source license.
 //
 // SUClearLogsAutomatically - optionally clean or not the update logs
-// SUUseJSONAppCast - optionally use a JSON appcast instead of a XML one
 // extern OSStatus SUFileSizeError
 
 
@@ -55,7 +54,6 @@ extern NSString *const SUPromptUserOnFirstLaunchKey;
 extern NSString *const SUKeepDownloadOnFailedInstallKey;
 extern NSString *const SUDefaultsDomainKey;
 extern NSString *const SUClearLogsAutomatically;
-extern NSString *const SUUseJSONAppCast;
 extern NSString *const SUFixedHTMLDisplaySizeKey __attribute__((deprecated("This key is obsolete and has no effect.")));
 
 extern NSString *const SUAppendVersionNumberKey;
