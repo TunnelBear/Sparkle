@@ -104,8 +104,7 @@ static void event_handler(xpc_connection_t peer)
 	xpc_connection_resume(peer);
 }
 
-int main(int argc, const char *argv[])
+__attribute((noreturn)) int main(int __unused argc, const char __unused *argv[])
 {
 	xpc_main(event_handler);
-	return 0;
 }
