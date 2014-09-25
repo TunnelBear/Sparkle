@@ -580,8 +580,7 @@
 		61F83F6F0DBFE137006FDD30 /* SUBasicUpdateDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUBasicUpdateDriver.h; sourceTree = "<group>"; };
 		61F83F700DBFE137006FDD30 /* SUBasicUpdateDriver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUBasicUpdateDriver.m; sourceTree = "<group>"; };
 		6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "org.sparkle-project.Sparkle.SandboxService.xpc"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6B74D85E19217A74006F9DCA /* sandbox_service-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "sandbox_service-Info.plist"; sourceTree = "<group>"; };
-		6B74D86219217A74006F9DCA /* sandbox_service-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "sandbox_service-Prefix.pch"; sourceTree = "<group>"; };
+		6B74D85E19217A74006F9DCA /* SandboxService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SandboxService-Info.plist"; sourceTree = "<group>"; };
 		6B74D86319217A74006F9DCA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6B74D86819217B39006F9DCA /* SUXPC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SUXPC.h; sourceTree = "<group>"; };
 		6B74D86919217B39006F9DCA /* SUXPC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUXPC.m; sourceTree = "<group>"; };
@@ -704,7 +703,6 @@
 				1420DE391962322200203BB0 /* Documentation */,
 				FA1941C40D94A6EA00DD942E /* Configurations */,
 				0867D69AFE84028FC02AAC07 /* Frameworks */,
-				6B74D85C19217A74006F9DCA /* sandbox_service */,
 				034768DFFF38A50411DB9C8B /* Products */,
 			);
 			name = Sparkle;
@@ -811,6 +809,7 @@
 				61299B3909CB055000B7442F /* Appcast Support */,
 				55C14BD5136EEFD000649790 /* Autoupdate */,
 				089C1665FE841158C02AAC07 /* Framework Resources */,
+				6B74D85C19217A74006F9DCA /* SandboxService */,
 				618FA6DB0DB485440026945C /* Installation */,
 				61B5F8F309C4CE5900B25A18 /* Other Sources */,
 				6101354A0DD25B7F0049ACDF /* Unarchiving */,
@@ -1003,7 +1002,7 @@
 			name = "Update Control";
 			sourceTree = "<group>";
 		};
-		6B74D85C19217A74006F9DCA /* sandbox_service */ = {
+		6B74D85C19217A74006F9DCA /* SandboxService */ = {
 			isa = PBXGroup;
 			children = (
 				6B74D86819217B39006F9DCA /* SUXPC.h */,
@@ -1011,14 +1010,13 @@
 				6B74D86319217A74006F9DCA /* main.m */,
 				6B74D85D19217A74006F9DCA /* Supporting Files */,
 			);
-			path = sandbox_service;
+			path = SandboxService;
 			sourceTree = "<group>";
 		};
 		6B74D85D19217A74006F9DCA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				6B74D85E19217A74006F9DCA /* sandbox_service-Info.plist */,
-				6B74D86219217A74006F9DCA /* sandbox_service-Prefix.pch */,
+				6B74D85E19217A74006F9DCA /* SandboxService-Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -1219,9 +1217,9 @@
 			productReference = 61B5F90209C4CEE200B25A18 /* Sparkle Test App.app */;
 			productType = "com.apple.product-type.application";
 		};
-		6B74D85719217A74006F9DCA /* sandbox_service */ = {
+		6B74D85719217A74006F9DCA /* SandboxService */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6B74D86519217A74006F9DCA /* Build configuration list for PBXNativeTarget "sandbox_service" */;
+			buildConfigurationList = 6B74D86519217A74006F9DCA /* Build configuration list for PBXNativeTarget "SandboxService" */;
 			buildPhases = (
 				6B74D85419217A74006F9DCA /* Sources */,
 				6B74D85519217A74006F9DCA /* Frameworks */,
@@ -1233,7 +1231,7 @@
 			dependencies = (
 				61CE04A3197D14AF00915D3D /* PBXTargetDependency */,
 			);
-			name = sandbox_service;
+			name = SandboxService;
 			productName = sandbox_service;
 			productReference = 6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */;
 			productType = "com.apple.product-type.bundle";
@@ -1334,7 +1332,7 @@
 				612279D80DB5470200AB99EA /* Sparkle Unit Tests */,
 				5D06E8CF0FD68C7C005AE3F6 /* BinaryDelta */,
 				55C14BB6136EEF1500649790 /* Autoupdate */,
-				6B74D85719217A74006F9DCA /* sandbox_service */,
+				6B74D85719217A74006F9DCA /* SandboxService */,
 				14732BC51960F69300593899 /* Distribution */,
 				1420DF491962329200203BB0 /* Documentation */,
 				1495005F195FB89400BC5B5B /* All */,
@@ -1657,7 +1655,7 @@
 		};
 		61CE04A5197D14C900915D3D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6B74D85719217A74006F9DCA /* sandbox_service */;
+			target = 6B74D85719217A74006F9DCA /* SandboxService */;
 			targetProxy = 61CE04A4197D14C900915D3D /* PBXContainerItemProxy */;
 		};
 		61FA528D0E2D9EB200EF58AD /* PBXTargetDependency */ = {
@@ -2043,7 +2041,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6B74D86519217A74006F9DCA /* Build configuration list for PBXNativeTarget "sandbox_service" */ = {
+		6B74D86519217A74006F9DCA /* Build configuration list for PBXNativeTarget "SandboxService" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6B74D86619217A74006F9DCA /* Debug */,

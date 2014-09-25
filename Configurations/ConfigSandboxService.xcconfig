@@ -1,4 +1,4 @@
-INFOPLIST_FILE = sandbox_service/sandbox_service-Info.plist
+INFOPLIST_FILE = Sparkle/SandboxService/SandboxService-Info.plist
 PRODUCT_NAME = $(SPARKLE_SANDBOX_SERVICE_NAME)
 WRAPPER_EXTENSION = xpc
 MACH_O_TYPE = mh_execute

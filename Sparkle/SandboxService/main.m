@@ -1,6 +1,6 @@
 //
 //  main.m
-//  sandbox_service
+//  SandboxService
 //
 //  Created by Yahoo (Fernando Pereira) on 5/12/14.
 //
