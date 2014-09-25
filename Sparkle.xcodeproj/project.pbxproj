@@ -62,6 +62,7 @@
 		14B550DF19D4BF300042C966 /* SUInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = 618FA5000DAE88B40026945C /* SUInstaller.m */; };
 		14B550E019D4BF510042C966 /* SUPackageInstaller.m in Sources */ = {isa = PBXBuildFile; fileRef = 618FA5210DAE8E8A0026945C /* SUPackageInstaller.m */; };
 		14B550E119D4BF690042C966 /* SULog.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C14F05136EF6DB00649790 /* SULog.m */; };
+		14B550E419D4C5600042C966 /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3772FEA913DE0B6B00F79537 /* SUVersionDisplayProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = 3772FEA813DE0B6B00F79537 /* SUVersionDisplayProtocol.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55C14BD4136EEFCE00649790 /* Autoupdate.m in Sources */ = {isa = PBXBuildFile; fileRef = 55C14BD3136EEFCE00649790 /* Autoupdate.m */; };
 		55C14BD9136EF00C00649790 /* SUStatus.xib in Resources */ = {isa = PBXBuildFile; fileRef = 55C14BD8136EF00C00649790 /* SUStatus.xib */; };
@@ -170,7 +171,6 @@
 		61B93C090DD112FF00DCD2F8 /* SUScheduledUpdateDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B93C070DD112FF00DCD2F8 /* SUScheduledUpdateDriver.h */; settings = {ATTRIBUTES = (); }; };
 		61B93C0A0DD112FF00DCD2F8 /* SUScheduledUpdateDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B93C080DD112FF00DCD2F8 /* SUScheduledUpdateDriver.m */; };
 		61CE04A0197D149500915D3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B74D86319217A74006F9DCA /* main.m */; };
-		61CE04A7197D14DB00915D3D /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		61CFB3290E385186007A1735 /* Sparkle.pch in Headers */ = {isa = PBXBuildFile; fileRef = 61CFB3280E385186007A1735 /* Sparkle.pch */; };
 		61D85D6D0E10B2ED00F9B4A9 /* SUPipedUnarchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 6129C0B90E0B79810062CE76 /* SUPipedUnarchiver.m */; };
 		61EF67560E25B58D00F754E0 /* SUHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EF67550E25B58D00F754E0 /* SUHost.m */; };
@@ -304,6 +304,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		14B550E319D4C4CF0042C966 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				14B550E419D4C5600042C966 /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		61B5FB4D09C4E9FA00B25A18 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -313,16 +323,6 @@
 				142E0E0019A6954400E4312B /* Sparkle.framework in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		61CE04A6197D14D100915D3D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
-			dstSubfolderSpec = 16;
-			files = (
-				61CE04A7197D14DB00915D3D /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */,
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1188,7 +1188,6 @@
 				61B5F8FF09C4CEE200B25A18 /* Sources */,
 				61B5F90009C4CEE200B25A18 /* Frameworks */,
 				61B5FB4D09C4E9FA00B25A18 /* Copy Frameworks */,
-				61CE04A6197D14D100915D3D /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -1225,6 +1224,7 @@
 				8DC2EF500486A6940098B216 /* Headers */,
 				8DC2EF520486A6940098B216 /* Resources */,
 				142E0E0319A6A24100E4312B /* CopyFiles */,
+				14B550E319D4C4CF0042C966 /* CopyFiles */,
 				8DC2EF540486A6940098B216 /* Sources */,
 				8DC2EF560486A6940098B216 /* Frameworks */,
 				6131B1910DDCDE32005215F0 /* Run Script: Set Git Version Info */,

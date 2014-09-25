@@ -529,11 +529,13 @@ NSLocalizedFailureReasonErrorKey:
         return;
     }
 
+    NSBundle *sparkleBundle = [NSBundle bundleWithIdentifier:SUBundleIdentifier];
+
     NSDictionary* environ = [[NSProcessInfo processInfo] environment];
     BOOL inSandbox = (nil != [environ objectForKey:@"APP_SANDBOX_CONTAINER_ID"]);
     BOOL running10_7 = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6;
     BOOL useXPC = running10_7 && inSandbox &&
-                  [[NSFileManager defaultManager] fileExistsAtPath: [[self.host bundlePath] stringByAppendingPathComponent:[NSString stringWithFormat:@"Contents/XPCServices/%@.xpc", @(SPARKLE_SANDBOX_SERVICE_NAME)]]];
+                  [[NSFileManager defaultManager] fileExistsAtPath: [sparkleBundle.bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Contents/XPCServices/%@.xpc", @(SPARKLE_SANDBOX_SERVICE_NAME)]]];
     SULog(@"installWithToolAndRelaunch - using xpc=%d", useXPC);
 
 
@@ -555,8 +557,6 @@ NSLocalizedFailureReasonErrorKey:
     if ([updaterDelegate respondsToSelector:@selector(updater:willInstallUpdate:)]) {
         [updaterDelegate updater:self.updater willInstallUpdate:self.updateItem];
     }
-
-    NSBundle *sparkleBundle = [NSBundle bundleWithIdentifier:SUBundleIdentifier];
 
     // Copy the relauncher into a temporary directory so we can get to it after the new version's installed.
     // Only the paranoid survive: if there's already a stray copy of relaunch there, we would have problems.
