@@ -170,7 +170,7 @@
 		61B93C090DD112FF00DCD2F8 /* SUScheduledUpdateDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B93C070DD112FF00DCD2F8 /* SUScheduledUpdateDriver.h */; settings = {ATTRIBUTES = (); }; };
 		61B93C0A0DD112FF00DCD2F8 /* SUScheduledUpdateDriver.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B93C080DD112FF00DCD2F8 /* SUScheduledUpdateDriver.m */; };
 		61CE04A0197D149500915D3D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B74D86319217A74006F9DCA /* main.m */; };
-		61CE04A7197D14DB00915D3D /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */; };
+		61CE04A7197D14DB00915D3D /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */ = {isa = PBXBuildFile; fileRef = 6B74D85819217A74006F9DCA /* org.sparkle-project.Sparkle.SandboxService.xpc */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		61CFB3290E385186007A1735 /* Sparkle.pch in Headers */ = {isa = PBXBuildFile; fileRef = 61CFB3280E385186007A1735 /* Sparkle.pch */; };
 		61D85D6D0E10B2ED00F9B4A9 /* SUPipedUnarchiver.m in Sources */ = {isa = PBXBuildFile; fileRef = 6129C0B90E0B79810062CE76 /* SUPipedUnarchiver.m */; };
 		61EF67560E25B58D00F754E0 /* SUHost.m in Sources */ = {isa = PBXBuildFile; fileRef = 61EF67550E25B58D00F754E0 /* SUHost.m */; };
@@ -267,13 +267,6 @@
 			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = Sparkle;
 		};
-		61CE04A2197D14AF00915D3D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = Sparkle;
-		};
 		61CE04A4197D14C900915D3D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
@@ -329,15 +322,6 @@
 			dstSubfolderSpec = 16;
 			files = (
 				61CE04A7197D14DB00915D3D /* org.sparkle-project.Sparkle.SandboxService.xpc in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		61CE04A8197D154B00915D3D /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1223,13 +1207,11 @@
 			buildPhases = (
 				6B74D85419217A74006F9DCA /* Sources */,
 				6B74D85519217A74006F9DCA /* Frameworks */,
-				6B74D85619217A74006F9DCA /* Resources */,
-				61CE04A8197D154B00915D3D /* CopyFiles */,
+				14B550E219D4C34A0042C966 /* Set Git Version Info */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				61CE04A3197D14AF00915D3D /* PBXTargetDependency */,
 			);
 			name = SandboxService;
 			productName = sandbox_service;
@@ -1371,13 +1353,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6B74D85619217A74006F9DCA /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		8DC2EF520486A6940098B216 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1402,6 +1377,21 @@
 			inputPaths = (
 			);
 			name = "Run Script: Set Git Version Info";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"$SRCROOT/Configurations/set-git-version-info.sh\"";
+			showEnvVarsInLog = 0;
+		};
+		14B550E219D4C34A0042C966 /* Set Git Version Info */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Set Git Version Info";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1647,11 +1637,6 @@
 			isa = PBXTargetDependency;
 			target = 8DC2EF4F0486A6940098B216 /* Sparkle */;
 			targetProxy = 61B5F91B09C4CF7200B25A18 /* PBXContainerItemProxy */;
-		};
-		61CE04A3197D14AF00915D3D /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8DC2EF4F0486A6940098B216 /* Sparkle */;
-			targetProxy = 61CE04A2197D14AF00915D3D /* PBXContainerItemProxy */;
 		};
 		61CE04A5197D14C900915D3D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
