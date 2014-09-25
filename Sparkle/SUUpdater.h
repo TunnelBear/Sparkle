@@ -109,9 +109,6 @@ SU_EXPORT @interface SUUpdater : NSObject
 
 @property (readonly) BOOL updateInProgress;
 
-// due to SUClearLogsAutomatically we might need to have the main program clear the log
-- (void) clearLog;
-
 @end
 
 // -----------------------------------------------------------------------------
