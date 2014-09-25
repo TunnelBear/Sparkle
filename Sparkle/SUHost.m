@@ -13,12 +13,8 @@
 #import "SULog.h"
 
 #if __MAC_OS_X_VERSION_MAX_ALLOWED < 101000
-typedef struct {
-    NSInteger majorVersion;
-    NSInteger minorVersion;
-    NSInteger patchVersion;
-} NSOperatingSystemVersion;
 @interface NSProcessInfo ()
+- (BOOL)isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion)version;
 - (NSOperatingSystemVersion)operatingSystemVersion;
 @end
 #endif
@@ -256,9 +252,26 @@ typedef struct {
     return [self objectForUserDefaultsKey:key] ? [self boolForUserDefaultsKey:key] : [self boolForInfoDictionaryKey:key];
 }
 
-+ (NSString *)systemVersionString
++ (BOOL)isOperatingSystemAtLeastVersion:(const NSOperatingSystemVersion)version
 {
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1090 // Present in 10.9 despite NS_AVAILABLE's claims
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 101000
+    if (![NSProcessInfo instancesRespondToSelector:@selector(isOperatingSystemAtLeastVersion:)]) {
+        const NSOperatingSystemVersion systemVersion = [SUHost operatingSystemVersion];
+        if (systemVersion.majorVersion == version.majorVersion) {
+            if (systemVersion.minorVersion == version.minorVersion) {
+                return systemVersion.patchVersion >= version.patchVersion;
+            }
+            return systemVersion.minorVersion >= version.minorVersion;
+        }
+        return systemVersion.majorVersion >= version.majorVersion;
+    }
+#endif
+    return [[NSProcessInfo processInfo] isOperatingSystemAtLeastVersion:version];
+}
+
++ (NSOperatingSystemVersion)operatingSystemVersion
+{
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 101000
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wselector"
     // Xcode 5.1.1: operatingSystemVersion is clearly declared, must warn due to a compiler bug?
@@ -266,10 +279,16 @@ typedef struct {
 #pragma clang diagnostic pop
     {
         NSURL *coreServices = [[NSFileManager defaultManager] URLForDirectory:NSCoreServiceDirectory inDomain:NSSystemDomainMask appropriateForURL:nil create:NO error:nil];
-        return [NSDictionary dictionaryWithContentsOfURL:[coreServices URLByAppendingPathComponent:@"SystemVersion.plist"]][@"ProductVersion"];
+        NSArray *components = [[NSDictionary dictionaryWithContentsOfURL:[coreServices URLByAppendingPathComponent:@"SystemVersion.plist"]][@"ProductVersion"] componentsSeparatedByString:@"."];
+        return (NSOperatingSystemVersion){ [components[0] integerValue], [components[1] integerValue], [components[2] integerValue] };
     }
 #endif
-    NSOperatingSystemVersion version = [[NSProcessInfo processInfo] operatingSystemVersion];
+    return [[NSProcessInfo processInfo] operatingSystemVersion];
+}
+
++ (NSString *)operatingSystemVersionString
+{
+    const NSOperatingSystemVersion version = [SUHost operatingSystemVersion];
     return [NSString stringWithFormat:@"%ld.%ld.%ld", (long)version.majorVersion, (long)version.minorVersion, (long)version.patchVersion];
 }
 

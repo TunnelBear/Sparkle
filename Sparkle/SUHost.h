@@ -10,11 +10,21 @@
 #import "SUAppcastItem.h"
 #import "SUVersionComparisonProtocol.h"
 
+#if __MAC_OS_X_VERSION_MAX_ALLOWED < 101000
+typedef struct {
+    NSInteger majorVersion;
+    NSInteger minorVersion;
+    NSInteger patchVersion;
+} NSOperatingSystemVersion;
+#endif
+
 @interface SUHost : NSObject
 
 @property (strong, readonly) NSBundle *bundle;
 
-+ (NSString *)systemVersionString;
++ (BOOL)isOperatingSystemAtLeastVersion:(const NSOperatingSystemVersion)version;
++ (NSOperatingSystemVersion)operatingSystemVersion;
++ (NSString *)operatingSystemVersionString;
 
 - (instancetype)initWithBundle:(NSBundle *)aBundle;
 @property (readonly, copy) NSString *bundlePath;

@@ -52,7 +52,7 @@ static NSString *const SUSystemProfilerPreferredLanguageKey = @"lang";
     size_t length = sizeof(value);
 
     // OS version
-    NSString *currentSystemVersion = [SUHost systemVersionString];
+    NSString *currentSystemVersion = [SUHost operatingSystemVersionString];
     if (currentSystemVersion != nil) {
         [profileArray addObject:[NSDictionary dictionaryWithObjects:@[SUSystemProfilerOperatingSystemVersionKey, @"OS Version", currentSystemVersion, currentSystemVersion] forKeys:profileDictKeys]];
     }

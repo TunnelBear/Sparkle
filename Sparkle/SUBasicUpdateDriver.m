@@ -132,10 +132,10 @@
 
     // Check minimum and maximum System Version
     if ([ui minimumSystemVersion] != nil && ![[ui minimumSystemVersion] isEqualToString:@""]) {
-        minimumVersionOK = [[SUStandardVersionComparator defaultComparator] compareVersion:[ui minimumSystemVersion] toVersion:[SUHost systemVersionString]] != NSOrderedDescending;
+        minimumVersionOK = [[SUStandardVersionComparator defaultComparator] compareVersion:[ui minimumSystemVersion] toVersion:[SUHost operatingSystemVersionString]] != NSOrderedDescending;
     }
     if ([ui maximumSystemVersion] != nil && ![[ui maximumSystemVersion] isEqualToString:@""]) {
-        maximumVersionOK = [[SUStandardVersionComparator defaultComparator] compareVersion:[ui maximumSystemVersion] toVersion:[SUHost systemVersionString]] != NSOrderedAscending;
+        maximumVersionOK = [[SUStandardVersionComparator defaultComparator] compareVersion:[ui maximumSystemVersion] toVersion:[SUHost operatingSystemVersionString]] != NSOrderedAscending;
     }
 
     return minimumVersionOK && maximumVersionOK;
@@ -533,7 +533,7 @@ NSLocalizedFailureReasonErrorKey:
 
     NSDictionary* environ = [[NSProcessInfo processInfo] environment];
     BOOL inSandbox = (nil != [environ objectForKey:@"APP_SANDBOX_CONTAINER_ID"]);
-    BOOL running10_7 = floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_6;
+    BOOL running10_7 = [SUHost isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){ 10, 7, 0 }];
     BOOL useXPC = running10_7 && inSandbox &&
                   [[NSFileManager defaultManager] fileExistsAtPath: [sparkleBundle.bundlePath stringByAppendingPathComponent:[NSString stringWithFormat:@"Contents/XPCServices/%@.xpc", @(SPARKLE_SANDBOX_SERVICE_NAME)]]];
     SULog(@"installWithToolAndRelaunch - using xpc=%d", useXPC);
