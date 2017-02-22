@@ -52,15 +52,17 @@
 
 - (void)didFindValidUpdate
 {
-    if ([[self.updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)]) {
-        [[self.updater delegate] updater:self.updater didFindValidUpdate:self.updateItem];
+    if ([[self.updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:respondWithChoice:)]) {
+        [[self.updater delegate] updater:self.updater didFindValidUpdate:self.updateItem respondWithChoice:^(SUDUpdateAlertChoice choice) {
+          [self updateAlertFinishedWithChoice:(SUUpdateAlertChoice)choice];
+        }];
+      
+      return;
     }
-
-    if (self.automaticallyInstallUpdates) {
-        [self updateAlertFinishedWithChoice:SUInstallUpdateChoice];
-        return;
+    else if ([[self.updater delegate] respondsToSelector:@selector(updater:didFindValidUpdate:)]) {
+      [[self.updater delegate] updater:self.updater didFindValidUpdate:self.updateItem];
     }
-
+  
     self.updateAlert = [[SUUpdateAlert alloc] initWithAppcastItem:self.updateItem host:self.host completionBlock:^(SUUpdateAlertChoice choice) {
         [self updateAlertFinishedWithChoice:choice];
     }];
@@ -114,15 +116,18 @@
     [self.host setObject:nil forUserDefaultsKey:SUSkippedVersionKey];
     switch (choice) {
         case SUInstallUpdateChoice:
-            self.statusController = [[SUStatusController alloc] initWithHost:self.host];
-            [self.statusController beginActionWithTitle:SULocalizedString(@"Downloading update...", @"Take care not to overflow the status window.") maxProgressValue:0.0 statusText:nil];
-            [self.statusController setButtonTitle:SULocalizedString(@"Cancel", nil) target:self action:@selector(cancelDownload:) isDefault:NO];
-            [self.statusController showWindow:self];
+        
+        if(![[self.updater delegate] suppressSparkleUI]) {
+          self.statusController = [[SUStatusController alloc] initWithHost:self.host];
+          [self.statusController beginActionWithTitle:SULocalizedString(@"Downloading update...", @"Take care not to overflow the status window.") maxProgressValue:0.0 statusText:nil];
+          [self.statusController setButtonTitle:SULocalizedString(@"Cancel", nil) target:self action:@selector(cancelDownload:) isDefault:NO];
+          [self.statusController showWindow:self];
+        }
             [self downloadUpdate];
             break;
 
         case SUOpenInfoURLChoice:
-            [[NSWorkspace sharedWorkspace] openURL:[self.updateItem infoURL]];
+            [[NSWorkspace sharedWorkspace] openURL:[self.updateItem releaseNotesURL]];
             [self abortUpdate];
             break;
 
