@@ -209,7 +209,21 @@
     [[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterDidFindValidUpdateNotification
                                                         object:self.updater
                                                       userInfo:@{ SUUpdaterAppcastItemNotificationKey: self.updateItem }];
-    [self downloadUpdate];
+    
+    
+    if (![updater automaticallyDownloadsUpdates])
+    {
+        // TB: App is in a non writable directory
+        NSError *error =
+        [NSError errorWithDomain:SUSparkleErrorDomain code:SUHostDirectoryNotWritable
+                        userInfo:@{NSLocalizedDescriptionKey: SULocalizedString(@"Host directory is not writable", nil)}];
+        
+        [self abortUpdateWithError:error];
+    }
+    else
+    {
+        [self downloadUpdate];
+    }
 }
 
 - (void)didNotFindUpdate
